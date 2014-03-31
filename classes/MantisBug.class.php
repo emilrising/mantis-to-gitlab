@@ -64,21 +64,21 @@ class MantisBug extends MantisBaseClass
          */
         //Id
         $gitlab_data -> id = $mantis_data -> id;
+        $gitlab_data -> iid = $mantis_data -> id;
         //Title
         $gitlab_data -> title = $mantis_data -> summary;
 
         //assignee_id
+	$gitlab_data -> assignee_id = NULL;
         $mantis_user = new MantisUser();
-        $mantis_user -> id = $mantis_data -> handler_id;
+	$mantis_user  -> setWhere(':Id',$mantis_data -> handler_id);
         $mantis_user = $mantis_user -> getInstance();
-		if(is_object($mantis_user)) {
+	if(is_object($mantis_user)) {
 	        $gitlab_user = new GitlabUser();		
 	        $gitlab_user -> email = $mantis_user -> email;
 	        $gitlab_user = $gitlab_user -> findUser();
 	        $gitlab_data -> assignee_id = $gitlab_user -> id;
-		} else {
-			$gitlab_data -> assignee_id = NULL;
-		}
+	}
         //author_id
         $mantis_user = new MantisUser();
 		$mantis_user  =  $mantis_user  -> setWhere(':Id',$mantis_data -> reporter_id);
@@ -97,6 +97,7 @@ class MantisBug extends MantisBaseClass
         //TODO what is giltab position?
         $gitlab_data -> position = 0;
         //XXX branch_name there is no equivalent in Mantis.
+	$gitlab_data -> branch_name = NULL;
         //
         //description
         $mantis_bug_text = new MantisBugText();
@@ -110,6 +111,7 @@ class MantisBug extends MantisBaseClass
 		$bug_note = str_replace('>', '>```', $bug_note);
         $gitlab_data -> description = $bug_note;
         //milestone_id
+	$gitlab_data -> milestone_id = NULL;	
         if(strlen($mantis_data -> target_version)){
 	        $mantis_version = new MantisProjectVersion();
 			$mantis_version = $mantis_version -> setWhere(':Version',$mantis_data -> target_version);
@@ -118,8 +120,6 @@ class MantisBug extends MantisBaseClass
 	        $gitlab_data -> milestone_id = $mantis_version -> id;
 			//save this milestone to Gitlab
 			$mantis_version -> insert();
-		} else {
-			$gitlab_data -> milestone_id = NULL;	
 		}
         /*
          * State
