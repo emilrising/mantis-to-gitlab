@@ -14,6 +14,7 @@ class MantisProjectVersion extends MantisBaseClass{
 		$gitlab_milestone = new GitlabMilestone();
 		//id
 		$gitlab_milestone -> id = $this -> id;
+		$gitlab_milestone -> iid = $this -> id;
 		//title
 		$gitlab_milestone -> title = $this -> version;
 		//FIXME project_id
@@ -24,9 +25,9 @@ class MantisProjectVersion extends MantisBaseClass{
 		//due_date
 		$gitlab_milestone -> due_date = date('Y-m-d H:i:s',  $this -> date_order);
 		//created_at note: no such field in Mantis.
-		$gitlab_milestone -> created_at = NULL;
+		$gitlab_milestone -> created_at = date('Y-m-d H:i:s',  $this -> date_order);
 		//updated_at note: no such field in Mantis.
-		$gitlab_milestone -> updated_at = NULL;
+		$gitlab_milestone -> updated_at = date('Y-m-d H:i:s',  $this -> date_order);
 		//state
 		$state_types = array(0 => 'active', 1 => 'closed');
 		$gitlab_milestone -> state = $state_types[$this -> released];
